@@ -6,10 +6,10 @@ namespace KhumaloCrafts.Models
     [Table("ShoppingCart")]
     public class ShoppingCart
     {
-        [Key]
         public int Id { get; set; }
         public string UserId { get; set; }
-
+        public bool IsDeleted { get; set; }
         public ICollection<CartDetail> CartDetails { get; set; }
     }
+
 }

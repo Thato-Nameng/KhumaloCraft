@@ -1,35 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using KhumaloCrafts.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KhumaloCrafts.Models
 {
     [Table("Order")]
     public class Order
     {
-        [Key]
         public int Id { get; set; }
-
         [Required]
         public string UserId { get; set; }
-
-        public DateTime OrderDate { get; set; }
-
+        public DateTime CreateDate { get; set; } = DateTime.UtcNow;
         [Required]
         public int OrderStatusId { get; set; }
-
+        public bool IsDeleted { get; set; } = false;
+        [Required]
         [MaxLength(30)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        [MaxLength(30)]
+        [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        [MaxLength(30)]
+        public string? Email { get; set; }
+        [Required]
+        public string? MobileNumber { get; set; }
+        [Required]
+        [MaxLength(200)]
+        public string? Address { get; set; }
 
-        public string MobileNumber { get; set; }
-        public string Address { get; set; }
-        public string PaymentMethod { get; set; }
+        [Required]
+        public string? PaymentMethod { get; set; }
+
         public bool IsPaid { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public List<OrderDetail> OrderDetail { get; set; }
     }
 }

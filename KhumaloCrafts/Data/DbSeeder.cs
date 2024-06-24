@@ -1,30 +1,40 @@
-﻿using KhumaloCrafts.Models;
+﻿using KhumaloCrafts.Constants;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KhumaloCrafts.Data
 {
     public class DbSeeder
     {
-        public static async Task SeedData(IServiceProvider serviceProvider)
+        public static async Task SeedDefaultData(IServiceProvider serviceProvider)
         {
-            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-            await roleManager.CreateAsync(new IdentityRole("User"));
-
-            var adminUser = new ApplicationUser
+            // Adding roles to the database
+            if (!await roleManager.RoleExistsAsync(Roles.Admin.ToString()))
             {
-                UserName = "admin@khumalo.com",
-                Email = "admin@khumalo.com",
+                await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
+            }
+            if (!await roleManager.RoleExistsAsync(Roles.User.ToString()))
+            {
+                await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
+            }
+
+            // Create admin user
+            var adminEmail = "admin@gmail.com";
+            var adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
                 EmailConfirmed = true
             };
 
-            var userInDb = await userManager.FindByEmailAsync(adminUser.Email);
+            var userInDb = await userManager.FindByEmailAsync(adminEmail);
             if (userInDb == null)
             {
-                await userManager.CreateAsync(adminUser, "Admin@123");
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.CreateAsync(adminUser, "@Admin123");
+                await userManager.AddToRoleAsync(adminUser, Roles.Admin.ToString());
             }
         }
     }

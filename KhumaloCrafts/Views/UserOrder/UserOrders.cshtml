@@ -1,0 +1,73 @@
+﻿@model IEnumerable<KhumaloCrafts.Models.Order>
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div style="width:100%" class="mt-2">
+    <a href="/Identity/Account/Manage" class="btn btn-primary my-2">Back</a>
+
+    <h4>My Orders</h4>
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.CreateDate.ToString("dd-MM-yyyy")</td>
+                        <td>@order.OrderStatus.StatusName</td>
+                    </tr>
+                    @if (order.OrderDetail != null && order.OrderDetail.Any())
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Image</th>
+                                            <th>Unit Price (R)</th>
+                                            <th>Quantity</th>
+                                            <th>Total Price (R)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in order.OrderDetail)
+                                        {
+                                            <tr>
+                                                <td>@item.Craft.CraftName</td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(item.Craft.Image))
+                                                    {
+                                                        <img src="/images/@item.Craft.Image" style="width:80px;height:100px" />
+                                                    }
+                                                </td>
+                                                <td>@item.UnitPrice</td>
+                                                <td>@item.Availability</td>
+                                                <td>@(item.UnitPrice * item.Availability)</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td colspan="4">Total R:</td>
+                                            <td>@order.OrderDetail.Sum(item => item.UnitPrice * item.Availability)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h5>No orders</h5>
+    }
+</div>

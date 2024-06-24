@@ -6,11 +6,10 @@ namespace KhumaloCrafts.Models
     [Table("OrderStatus")]
     public class OrderStatus
     {
-        [Key]
         public int Id { get; set; }
-
         [Required]
-        [MaxLength(20)]
-        public string Status { get; set; }
+        public int StatusId { get; set; }
+        [Required, MaxLength(20)]
+        public string? StatusName { get; set; }
     }
 }
